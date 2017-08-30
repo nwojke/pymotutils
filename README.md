@@ -25,3 +25,6 @@ unzip MOT16.zip -d MOT16
 PYTHONPATH=$(pwd) python examples/motchallenge_playback.py \
     --mot_dir=./MOT16/train --sequence=MOT16-02
 ```
+
+A complete implementation of a tracking method using this utility package
+can be found in a seperate [project](https://github.com/nwojke/mcf-tracker).
