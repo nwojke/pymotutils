@@ -124,7 +124,7 @@ def write_hypotheses(filename, track_set_2d=None, track_set_3d=None):
 
     """
     ref_set = track_set_2d if track_set_2d is not None else track_set_3d
-    offset = 1 - ref_set.first_frame_idx
+    offset = 1 - ref_set.first_frame_idx()
 
     csvfile = open(filename, "w")
     for frame_idx in ref_set.frame_range():
@@ -175,7 +175,7 @@ def write_groundtruth(filename, track_set_2d=None, track_set_3d=None):
 
     """
     ref_set = track_set_2d if track_set_2d is not None else track_set_3d
-    offset = 1 - ref_set.first_frame_idx
+    offset = 1 - ref_set.first_frame_idx()
 
     csvfile = open(filename, "w")
     for frame_idx in ref_set.frame_range():
