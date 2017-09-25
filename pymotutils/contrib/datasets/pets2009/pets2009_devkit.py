@@ -433,18 +433,20 @@ class Devkit(object):
 
         print("Copying files")
         for i, tname in enumerate(sorted(tnames)):
-            if len(tnames) > 1:
-                dest_dir += "-%d" % (1 + i)
-            views = sorted(os.listdir(os.path.join(tcontainer, tname)))
+            views = sorted(os.listdir(tname))
             for view in views:
-                source_dir = os.path.join(tcontainer, tname, view)
-                os.makedirs(dest_dir, exist_ok=True)
+                source_dir = os.path.join(tname, view)
+                this_dest_dir = (
+                    dest_dir if len(tnames) == 1
+                    else "%s-%d" % (dest_dir, 1 + i))
+                this_dest_dir = os.path.join(this_dest_dir, view)
+                os.makedirs(this_dest_dir, exist_ok=True)
 
                 filenames = glob.glob(os.path.join(source_dir, "*.jpg"))
                 for filename in filenames:
                     shutil.copyfile(
-                        filename,
-                        os.path.join(dest_dir, os.path.basename(filename)))
+                        filename, os.path.join(
+                            this_dest_dir, os.path.basename(filename)))
 
         print("Removing temporary files")
         shutil.rmtree(tmpdir)
