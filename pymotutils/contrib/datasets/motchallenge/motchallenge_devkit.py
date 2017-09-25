@@ -76,7 +76,8 @@ class DataSource(pymotutils.DataSource):
         frame_data = {
             "bgr_image": bgr_image,
             "detections": self.detections.get(frame_idx, []),
-            "ground_truth": self.ground_truth
+            "ground_truth": self.ground_truth,
+            "timestamp": float(frame_idx)
         }
         return frame_data
 

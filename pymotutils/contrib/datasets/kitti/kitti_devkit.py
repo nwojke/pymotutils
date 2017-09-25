@@ -342,7 +342,7 @@ class Devkit(object):
 
         rectified_to_imu = np.linalg.inv(imu_to_rectified)
         frame_idx_to_sensor_pose = {
-            i: np.dot(imu_to_world, rectified_to_imu)
+            i: np.dot(imu_to_world, rectified_to_imu)[:3, :4]
             for i, imu_to_world in enumerate(imu_to_world_list)
         }
 

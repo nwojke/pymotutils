@@ -76,7 +76,8 @@ def non_max_suppression(boxes, max_bbox_overlap, scores=None):
 
 
 def filter_detections(
-        detection_dict, min_confidence=None, min_width=None, min_height=None):
+        detection_dict, min_confidence=None, min_width=None, min_height=None,
+        max_width=None, max_height=None):
     """Filter detections by detector confidencen and extent.
 
     Parameters
@@ -90,6 +91,10 @@ def filter_detections(
         If not None, discards detections with width lower than this value.
     min_height : Optional[float]
         If not None, discards detections with height lower than this value.
+    max_width: Optional[float]
+        If not None, discards detections with width lower than this value.
+    max_height: Optional[float]
+        If not None, discards detections with height lower than this value.
 
     Returns
     -------
@@ -101,13 +106,17 @@ def filter_detections(
         min_width = -np.inf
     if min_height is None:
         min_height = -np.inf
+    if max_width is None:
+        max_width = np.inf
+    if max_height is None:
+        max_height = np.inf
 
     def filter_fn(detection):
         if min_confidence is not None and detection.confidence < min_confidence:
             return False
-        if detection.roi[2] < min_width:
+        if detection.roi[2] < min_width or detection.roi[2] > max_width:
             return False
-        if detection.roi[3] < min_height:
+        if detection.roi[3] < min_height or detection.roi[3] > max_height:
             return False
         return True
 

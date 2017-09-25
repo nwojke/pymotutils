@@ -74,14 +74,14 @@ class DataSource(object):
         of tracking results (see :class:`Visualization`) and at least the
         following::
 
-        * "detections": The set of detections at the given timestep. This is
+        * "detections": The set of detections at the given time step. This is
           passed on to the tracker.
         * "timestamp": The timestamp of the given frame. This is used to
           configure the trackers motion model.
 
         Optionally, the frame data may contain::
 
-        * "sensor_pose": sensor pose at the current timestep, this is
+        * "sensor_pose": sensor pose at the current time step, this is
           passed on to the tracker. By convention, this should be an affine
           transformation matrix.
         * "ground_truth": ground truth data over the entire sequence, i.e., a
@@ -179,12 +179,12 @@ class Visualization(object):
 
     @abc.abstractmethod
     def draw_detections(self, detections):
-        """Draw detections at the current timestep.
+        """Draw detections at the current time step.
 
         Parameters
         ----------
         detections : List[Detection]
-            The set of detections at the current timestep. The concrete type
+            The set of detections at the current time step. The concrete type
             is application specific.
 
         """
@@ -206,7 +206,7 @@ class Visualization(object):
 
     @abc.abstractmethod
     def draw_track_set(self, frame_idx, track_set):
-        """Draw a set of tracks at the current timestep.
+        """Draw a set of tracks at the current time step.
 
         Parameters
         ----------

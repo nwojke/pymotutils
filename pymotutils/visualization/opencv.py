@@ -181,7 +181,7 @@ class ImageViewer(object):
                 cv2.rectangle(self.image, pt1, pt2, self._color, -1)
                 cv2.putText(
                     self.image, label, center, cv2.FONT_HERSHEY_PLAIN, 1,
-                    (255, 255, 255), self.thickness)
+                    self.text_color, self.thickness)
             return
 
         padding = max(0, self.thickness)

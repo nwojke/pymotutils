@@ -20,14 +20,12 @@ class RegionOfInterestDetection(pymotutils.Detection):
     roi : ndarray
         The region of interest in which the object is contained as 4
         dimensional vector (x, y, w, h) where (x, y) is the top-left corner
-        and (w, h) is the extent. If xyz is None, the sensor_data field is
-        set to this value.
+        and (w, h) is the extent.
     confidence : NoneType | float
         Optional detector confidence score. If not None, it is appended to the
         sensor_data field of the detection.
     xyz : NoneType | ndarray
-        Optional object locataion, e.g., in camera or world frame. If given,
-        the sensor_data attribute is set to this value.
+        Optional object locataion, e.g., in camera or world frame.
     feature : NoneType | ndarray
         Optional appearance descriptor.
     do_not_care : bool
@@ -56,9 +54,7 @@ class RegionOfInterestDetection(pymotutils.Detection):
     def __init__(
             self, frame_idx, roi, confidence=None, xyz=None, feature=None,
             do_not_care=False):
-        sensor_data = xyz if xyz is not None else roi
-        if confidence is not None:
-            sensor_data = np.r_[sensor_data, confidence]
+        sensor_data = roi if confidence is None else np.r_[roi, confidence]
         super(RegionOfInterestDetection, self).__init__(
             frame_idx, sensor_data, do_not_care=do_not_care, roi=roi,
             confidence=confidence, xyz=xyz, feature=feature)
@@ -173,6 +169,7 @@ def compute_features(detections, image_filenames, feature_extractor):
         an NxM dimensional matrix of N associated feature vectors.
 
     """
+
     frame_indices = sorted(list(detections.keys()))
     for frame_idx in frame_indices:
         bgr_image = cv2.imread(image_filenames[frame_idx], cv2.IMREAD_COLOR)
@@ -182,3 +179,55 @@ def compute_features(detections, image_filenames, feature_extractor):
         features = feature_extractor(bgr_image, rois)
         for i, feature in enumerate(features):
             setattr(detections[frame_idx][i], "feature", feature)
+
+
+def extract_image_patches(detections, image_filenames, patch_shape):
+    """Utility function to extract image patches of each detetions bounding box.
+
+    On exit, each detection in `detections` has an attribute `image` that
+    contains the image patch of shape `patch_shape` that shows the corresponding
+    to the bounding box detection.
+
+    Parameters
+    ----------
+    detections : Dict[int, List[RegionOfInterestDetection]]
+        A dictionary that maps from frame index to list of detections.
+    image_filenames : Dict[int, str]
+        A dictionary that maps from frame index to image filename. The keys of
+        the provided detections and image_filenames must match.
+    patch_shape : (int, int)
+        Image patch shape (width, height). All bounding boxes are reshaped to
+        this shape.
+
+    """
+    def extract_image_patch(image, bbox):
+        bbox = np.array(bbox)
+        if patch_shape is not None:
+            # correct aspect ratio to patch shape
+            target_aspect = float(patch_shape[1]) / patch_shape[0]
+            new_width = target_aspect * bbox[3]
+            bbox[0] -= (new_width - bbox[2]) / 2
+            bbox[2] = new_width
+
+        # convert to top left, bottom right
+        bbox[2:] += bbox[:2]
+        bbox = bbox.astype(np.int)
+
+        # clip at image boundaries
+        bbox[:2] = np.maximum(0, bbox[:2])
+        bbox[2:] = np.minimum(np.asarray(image.shape[:2][::-1]) - 1, bbox[2:])
+        if np.any(bbox[:2] >= bbox[2:]):
+            return None
+        sx, sy, ex, ey = bbox
+        image = image[sy:ey, sx:ex]
+        image = cv2.resize(image, patch_shape[::-1])
+        return image
+
+    frame_indices = sorted(list(detections.keys()))
+    for frame_idx in frame_indices:
+        bgr_image = cv2.imread(image_filenames[frame_idx], cv2.IMREAD_COLOR)
+        assert bgr_image is not None, "Failed to load image"
+
+        rois = np.asarray([d.roi for d in detections[frame_idx]])
+        for i, detection in enumerate(detections[frame_idx]):
+            setattr(detection, "image", extract_image_patch(bgr_image, rois[i]))
