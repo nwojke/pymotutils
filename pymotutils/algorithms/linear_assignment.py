@@ -70,6 +70,31 @@ def intersection_over_union_cost(rois_a, rois_b):
     return cost_matrix
 
 
+def pdist(a, b):
+    """Compute pair-wise squared distance between a and b.
+
+    Parameters
+    ----------
+    a : array_like
+        A first matrix of row-vectors
+    b : array_like
+        A second matrix of row-vectors
+
+    Returns
+    -------
+    ndarray
+        This functions returns the pair-wise squared distance between points
+        in a and b. If there are N elements in a and M elements in b, the
+        function returns a matrix of size NxM, such that element (i, j) returns
+        the squared distance between a[i] and b[j].
+
+    """
+    a2, b2 = np.square(a).sum(axis=1), np.square(b).sum(axis=1)
+    r2 = -2. * np.dot(a, b.T) + a2[:, None] + b2[None, :]
+    r2 = np.clip(r2, 0., float(np.inf))
+    return r2
+
+
 def min_cost_matching(cost_matrix, max_cost=None):
     """Solve a linear assignment problem.
 
