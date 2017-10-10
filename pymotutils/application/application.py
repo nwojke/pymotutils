@@ -391,11 +391,14 @@ class Application(object):
         assert isinstance(visualization, Visualization), (
             "visualization is of wrong type")
         start_idx = (
-            start_idx
-            if start_idx is not None else self.data_source.first_frame_idx())
+            start_idx if start_idx is not None
+            else self.data_source.first_frame_idx())
+
+        source_end_idx = (
+            self.data_source.last_frame_idx() + 1
+            if self.data_source.last_frame_idx() is not None else None)
         end_idx = (
-            end_idx
-            if end_idx is not None else self.data_source.last_frame_idx() + 1)
+            end_idx if end_idx is not None else source_end_idx)
 
         self._visualization = visualization
         self._playback_trackset = track_set
@@ -478,11 +481,14 @@ class Application(object):
         assert isinstance(visualization, Visualization), (
             "visualization is of wrong type")
         start_idx = (
-            start_idx
-            if start_idx is not None else self.data_source.first_frame_idx())
+            start_idx if start_idx is not None
+            else self.data_source.first_frame_idx())
+
+        source_end_idx = (
+            self.data_source.last_frame_idx() + 1
+            if self.data_source.last_frame_idx() is not None else None)
         end_idx = (
-            end_idx
-            if end_idx is not None else self.data_source.last_frame_idx() + 1)
+            end_idx if end_idx is not None else source_end_idx)
 
         self._visualization = visualization
         visualization.run(start_idx, end_idx, self._next_frame_detections)

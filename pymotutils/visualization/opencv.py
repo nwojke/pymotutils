@@ -491,7 +491,7 @@ class ImageVisualization(pymotutils.Visualization):
         self._viewer.run(self._next_frame)
 
     def _next_frame(self):
-        if self._frame_idx >= self._end_idx:
+        if self._end_idx is not None and self._frame_idx >= self._end_idx:
             self._viewer.stop()
             return
         self._user_callback(self._frame_idx)
