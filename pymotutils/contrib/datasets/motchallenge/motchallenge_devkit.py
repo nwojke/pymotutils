@@ -19,7 +19,7 @@ class DataSource(pymotutils.DataSource):
         A dictionary that maps from frame index to list of detections. Each
         detection contains the bounding box and, if provided, the 3D object
         coordinates (via attribute `xyz`).
-    ground_truth : Optional[pymotutils.TrackSet]
+    ground_truth : Optional[TrackSet]
         The set of ground-truth tracks.
 
     Attributes
@@ -30,7 +30,7 @@ class DataSource(pymotutils.DataSource):
         A dictionary that maps from frame index to list of detections. Each
         detection contains the bounding box and, if provided, the 3D object
         coordinates (via attribute `xyz`).
-    ground_truth : NoneType | pymotutils.TrackSet
+    ground_truth : NoneType | TrackSet
         The set of ground-truth tracks, if available.
 
     """

@@ -22,7 +22,7 @@ def write_groundtruth(filename, track_set):
     ----------
     filename : str
         Name of the file to write to (file format will be JSON).
-    track_set : dataset.TrackSet
+    track_set : TrackSet
         The set of ground truth tracks.
 
     """
@@ -63,11 +63,11 @@ def write_hypotheses(filename, track_set):
     ----------
     filename : str
         Name of the file to write to (file format will be JSON).
-    track_set : dataset.TrackSet
+    track_set : TrackSet
         The set of track hypotheses (tracking output).
 
     """
-    assert isinstance(track_set, dataset.TrackSet), (
+    assert isinstance(track_set, pymotutils.TrackSet), (
         "track_set is of wrong type")
 
     output = {"frames": []}

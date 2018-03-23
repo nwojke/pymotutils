@@ -62,7 +62,10 @@ class DataSource(object):
             Number of frames in the data source or None.
 
         """
-        return self.last_frame_idx - self.first_frame_idx + 1
+        if self.last_frame_idx() is None:
+            return None
+        else:
+            return self.last_frame_idx() - self.first_frame_idx() + 1
 
     @abc.abstractmethod
     def read_frame_data(self, frame_idx):
@@ -85,10 +88,9 @@ class DataSource(object):
           passed on to the tracker. By convention, this should be an affine
           transformation matrix.
         * "ground_truth": ground truth data over the entire sequence, i.e., a
-          :class:`experiment.dataset.TrackSet` that contains the multi-target
-          ground truth trajectory of the entire sequence. This item should
-          contain the full track set (over the entire sequence) for all given
-          frame_idx.
+          :class:`TrackSet` that contains the multi-target ground truth
+          trajectory of the entire sequence. This item should contain the full
+          track set (over the entire sequence) for all given frame_idx.
 
         By convention, we currently use the following attribute names for
         visualization-dependent data::
@@ -377,7 +379,7 @@ class Application(object):
 
         Parameters
         ----------
-        track_set : experiment.dataset.TrackSet
+        track_set : TrackSet
             The set of tracks to visualize.
         visualization : Visualization
             A concrete implementation of Visualization that draws the track set.
