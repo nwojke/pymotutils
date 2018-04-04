@@ -70,7 +70,7 @@ def read_groundtruth(filename, sensor_data_is_3d=False):
 
     Returns
     -------
-    dataset.TrackSet
+    TrackSet
         Returns the tracking ground truth. If sensor_data_is_3d is True, the
         sensor data contains the 3D position. Otherwise, sensor_data
         is set to the region of interest (ROI).
@@ -115,10 +115,10 @@ def write_hypotheses(filename, track_set_2d=None, track_set_3d=None):
     ----------
     filename : str
         Name of the file to write to (file format will be CSV).
-    track_set_2d : Optional[dataset.TrackSet]
+    track_set_2d : Optional[TrackSet]
         The set of track hypotheses (tracking output), where sensor_data
         contains the object's region of interest (ROI).
-    track_set_3d : Optional[dataset.TrackSet]
+    track_set_3d : Optional[TrackSet]
         The set of track hypotheses (tracking output), where sensor_data
         contains the object's 3D position.
 
@@ -166,10 +166,10 @@ def write_groundtruth(filename, track_set_2d=None, track_set_3d=None):
     ----------
     filename : str
         Name of the file to write to (file format will be CSV)
-    track_set_2d : Optional[dataset.TrackSet]
+    track_set_2d : Optional[TrackSet]
         The set of ground truth tracks, where sensor_data contains the
         image region of interest (ROI).
-    track_set_3d : Optional[dataset.TrackSet]
+    track_set_3d : Optional[TrackSet]
         The set of ground truth tracks, where sensor_data contains the
         objects' 3D position.
 
