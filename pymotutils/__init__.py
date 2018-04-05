@@ -7,6 +7,7 @@ from .algorithms import linear_assignment
 from .application.application import *
 from .application.dataset import *
 
+from .io import detrac_io
 from .io import motchallenge_io
 from .io import pymot_io
 
