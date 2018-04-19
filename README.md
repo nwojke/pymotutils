@@ -8,16 +8,21 @@ This includes
 * Datasets and evaluation toolkits
 * Visualization
 
-## Dependencies
+# Installation
 
-* NumPy
-* sklearn (linear assignment)
-* OpenCV (visualization)
+The library can be installed with pip:
+
+```
+pip install git+https://github.com/nwojke/pymotutils
+```
+
+Note that some of the dataset wrappers in ``contrib`` may require additional
+packages that are not listed as a dependency.
 
 ## Example
 
 The following example downloads the MOT16 dataset and plays back one of
-the training sequences: 
+the training sequences:
 
 ```
 wget https://motchallenge.net/data/MOT16.zip
