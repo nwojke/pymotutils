@@ -359,8 +359,8 @@ class Application(object):
     """
 
     def __init__(self, data_source):
-        assert isinstance(data_source, DataSource), (
-            "data_source is of wrong type")
+        assert isinstance(
+            data_source, DataSource), "data_source is of wrong type"
         self.data_source = data_source
         self.hypotheses = pymotutils.TrackSet()
         self.ground_truth = pymotutils.TrackSet()
@@ -390,17 +390,16 @@ class Application(object):
             in the data source.
 
         """
-        assert isinstance(visualization, Visualization), (
-            "visualization is of wrong type")
+        assert isinstance(
+            visualization, Visualization), "visualization is of wrong type"
         start_idx = (
-            start_idx if start_idx is not None
-            else self.data_source.first_frame_idx())
+            start_idx
+            if start_idx is not None else self.data_source.first_frame_idx())
 
         source_end_idx = (
             self.data_source.last_frame_idx() + 1
             if self.data_source.last_frame_idx() is not None else None)
-        end_idx = (
-            end_idx if end_idx is not None else source_end_idx)
+        end_idx = (end_idx if end_idx is not None else source_end_idx)
 
         self._visualization = visualization
         self._playback_trackset = track_set
@@ -480,17 +479,16 @@ class Application(object):
             in the data source.
 
         """
-        assert isinstance(visualization, Visualization), (
-            "visualization is of wrong type")
+        assert isinstance(
+            visualization, Visualization), "visualization is of wrong type"
         start_idx = (
-            start_idx if start_idx is not None
-            else self.data_source.first_frame_idx())
+            start_idx
+            if start_idx is not None else self.data_source.first_frame_idx())
 
         source_end_idx = (
             self.data_source.last_frame_idx() + 1
             if self.data_source.last_frame_idx() is not None else None)
-        end_idx = (
-            end_idx if end_idx is not None else source_end_idx)
+        end_idx = (end_idx if end_idx is not None else source_end_idx)
 
         self._visualization = visualization
         visualization.run(start_idx, end_idx, self._next_frame_detections)
@@ -524,8 +522,8 @@ class Application(object):
         """
         if visualization is None:
             visualization = NoVisualization()
-        assert isinstance(visualization, Visualization), (
-            "visualization is of wrong type")
+        assert isinstance(
+            visualization, Visualization), "visualization is of wrong type"
         assert isinstance(tracker, Tracker), "tracker is of wrong type"
 
         start_idx = (

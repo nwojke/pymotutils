@@ -200,6 +200,7 @@ def extract_image_patches(detections, image_filenames, patch_shape):
         this shape.
 
     """
+
     def extract_image_patch(image, bbox):
         bbox = np.array(bbox)
         if patch_shape is not None:
@@ -230,4 +231,5 @@ def extract_image_patches(detections, image_filenames, patch_shape):
 
         rois = np.asarray([d.roi for d in detections[frame_idx]])
         for i, detection in enumerate(detections[frame_idx]):
-            setattr(detection, "image", extract_image_patch(bgr_image, rois[i]))
+            setattr(
+                detection, "image", extract_image_patch(bgr_image, rois[i]))

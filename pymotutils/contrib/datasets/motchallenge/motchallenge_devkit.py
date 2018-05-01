@@ -77,8 +77,7 @@ class DataSource(pymotutils.DataSource):
             "bgr_image": bgr_image,
             "detections": self.detections.get(frame_idx, []),
             "ground_truth": self.ground_truth,
-            "timestamp": float(frame_idx)
-        }
+            "timestamp": float(frame_idx)}
         return frame_data
 
     def peek_image_shape(self):
@@ -140,13 +139,12 @@ class Devkit(object):
         image_dir = os.path.join(sequence_dir, "img1")
         bgr_filenames = {
             int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
-            for f in sorted(os.listdir(image_dir))
-        }
+            for f in sorted(os.listdir(image_dir))}
 
         detection_file = (
             os.path.join(sequence_dir, "det", "det.txt")
-            if self.detection_dir is None
-            else os.path.join(self.detection_dir, "%s.txt" % sequence))
+            if self.detection_dir is None else os.path.join(
+                self.detection_dir, "%s.txt" % sequence))
         detections = pymotutils.motchallenge_io.read_detections(
             detection_file, min_confidence)
 

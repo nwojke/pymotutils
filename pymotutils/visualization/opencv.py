@@ -343,8 +343,8 @@ class ImageViewer(object):
             indices = np.logical_and.reduce((cond1, cond2, cond3, cond4))
             points = points[indices, :]
         if colors is None:
-            colors = np.repeat(self._color,
-                               len(points)).reshape(3, len(points)).T
+            colors = np.repeat(self._color, len(points)).reshape(
+                3, len(points)).T
         indices = (points + .5).astype(np.int)
         self.image[indices[:, 1], indices[:, 0], :] = colors
 

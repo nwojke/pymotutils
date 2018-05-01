@@ -42,8 +42,7 @@ def read_detections(filename, min_confidence=None):
             continue
         frame_idx, roi = int(row[0]), row[2:6]
         detections[frame_idx].append(
-            pymotutils.RegionOfInterestDetection(
-                frame_idx, roi, confidence))
+            pymotutils.RegionOfInterestDetection(frame_idx, roi, confidence))
     return detections
 
 
@@ -74,11 +73,11 @@ def read_groundtruth(filename):
             frame_idx = int(frame.get('num'))
             track_id = int(target.get('id'))
             box = target.find('box')
-            sensor_data = np.asarray(
-                [float(box.get('left')),
-                 float(box.get('top')),
-                 float(box.get('width')),
-                 float(box.get('height'))])
+            sensor_data = np.asarray([
+                float(box.get('left')),
+                float(box.get('top')),
+                float(box.get('width')),
+                float(box.get('height'))])
 
             if track_id not in ground_truth.tracks:
                 ground_truth.create_track(track_id)
@@ -117,16 +116,16 @@ def write_hypotheses(foldername, sequence_name, track_set, speed=25.0):
     track_array = np.zeros((4, num_of_frames, len(track_set.tracks)))
     for (track_idx, track_id) in enumerate(track_set.tracks):
         for obj in itervalues(track_set.tracks[track_id].detections):
-            track_array[:, obj.frame_idx-1, track_idx] = obj.sensor_data[0:4]
+            track_array[:, obj.frame_idx - 1, track_idx] = obj.sensor_data[0:4]
 
     for i, suffix in enumerate(['_LX.txt', '_LY.txt', '_W.txt', '_H.txt']):
         np.savetxt(
-            os.path.join(foldername, sequence_name + suffix),
-            track_array[i],
+            os.path.join(foldername, sequence_name + suffix), track_array[i],
             fmt='%.3g', delimiter=',')
 
-    np.savetxt(os.path.join(foldername, sequence_name + '_Speed.txt'), [speed],
-               fmt='%.5f')
+    np.savetxt(
+        os.path.join(foldername, sequence_name + '_Speed.txt'),
+        [speed], fmt='%.5f')
 
 
 def write_groundtruth():

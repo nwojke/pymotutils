@@ -84,5 +84,6 @@ def interpolate_track_set(track_set):
         for i, frame_idx in enumerate(frame_range):
             sensor_data = np.array([interp[i] for interp in interps])
             do_not_care = frame_idx not in track.detections
-            itrack.add(pymotutils.Detection(frame_idx, sensor_data, do_not_care))
+            itrack.add(
+                pymotutils.Detection(frame_idx, sensor_data, do_not_care))
     return interp_set

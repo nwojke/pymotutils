@@ -26,8 +26,8 @@ def write_groundtruth(filename, track_set):
         The set of ground truth tracks.
 
     """
-    assert isinstance(track_set, pymotutils.TrackSet), (
-        "track_set is of wrong type")
+    assert isinstance(
+        track_set, pymotutils.TrackSet), "track_set is of wrong type"
 
     output = {"frames": []}
     for frame_id in track_set.frame_range():
@@ -67,8 +67,8 @@ def write_hypotheses(filename, track_set):
         The set of track hypotheses (tracking output).
 
     """
-    assert isinstance(track_set, pymotutils.TrackSet), (
-        "track_set is of wrong type")
+    assert isinstance(
+        track_set, pymotutils.TrackSet), "track_set is of wrong type"
 
     output = {"frames": []}
     for frame_id in track_set.frame_range():

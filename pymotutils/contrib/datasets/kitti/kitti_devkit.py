@@ -10,8 +10,7 @@ SEQUENCES_TESTING = ["%04.d" % i for i in range(1, 29)]
 
 OBJECT_CLASSES = [
     "Car", "Van", "Truck", "Pedestrian", "Person_sitting", "Cyclist", "Tram",
-    "Misc", "DontCare"
-]
+    "Misc", "DontCare"]
 
 OBJECT_CLASSES_CARS = ["Car"]
 
@@ -65,16 +64,16 @@ def convert_oxts_to_pose(oxts_list):
         rx, ry, rz = oxts[3:6]  # roll, pitch, heading
 
         # base => nav  (level oxts => rotated oxts)
-        rotation_x = np.array([[1, 0, 0], [0, np.cos(rx), -np.sin(rx)],
-                               [0, np.sin(rx), np.cos(rx)]])
+        rotation_x = np.array([[1, 0, 0], [0, np.cos(rx), -np.sin(rx)], [
+            0, np.sin(rx), np.cos(rx)]])
 
         # base => nav  (level oxts => rotated oxts)
-        rotation_y = np.array([[np.cos(ry), 0, np.sin(ry)], [0, 1, 0],
-                               [-np.sin(ry), 0, np.cos(ry)]])
+        rotation_y = np.array([[np.cos(ry), 0, np.sin(ry)], [0, 1, 0], [
+            -np.sin(ry), 0, np.cos(ry)]])
 
         # base => nav  (level oxts => rotated oxts)
-        rotation_z = np.array([[np.cos(rz), -np.sin(rz), 0],
-                               [np.sin(rz), np.cos(rz), 0], [0, 0, 1]])
+        rotation_z = np.array([[np.cos(rz), -np.sin(rz), 0], [
+            np.sin(rz), np.cos(rz), 0], [0, 0, 1]])
 
         # normalize translation and rotation (start at 0/0/0)
         transformation = np.eye(4, 4)
@@ -282,8 +281,7 @@ class DataSource(pymotutils.DataSource):
             "ground_truth": self.ground_truth,
             "timestamp": float(frame_idx) * self.update_ms / 1000.,
             "sensor_pose": self.sensor_poses[frame_idx],
-            "projection_matrix": self.projection_matrix
-        }
+            "projection_matrix": self.projection_matrix}
         return frame_data
 
 
@@ -302,8 +300,7 @@ class Devkit(object):
         image_dir = os.path.join(self.dataset_dir, "image_02", sequence)
         bgr_filenames = {
             int(os.path.splitext(f)[0]): os.path.join(image_dir, f)
-            for f in sorted(os.listdir(image_dir))
-        }
+            for f in sorted(os.listdir(image_dir))}
 
         if self.detection_dir is not None:
             detections_filename = os.path.join(
@@ -321,7 +318,8 @@ class Devkit(object):
             detections_filename = os.path.join(
                 self.dataset_dir, "det_02/%s.txt" % sequence)
             detections = read_detections(
-                detections_filename, object_classes, min_height, min_confidence)
+                detections_filename, object_classes, min_height,
+                min_confidence)
 
         ground_truth_filename = os.path.join(
             self.dataset_dir, "label_02/%s.txt" % sequence)
@@ -343,8 +341,7 @@ class Devkit(object):
         rectified_to_imu = np.linalg.inv(imu_to_rectified)
         frame_idx_to_sensor_pose = {
             i: np.dot(imu_to_world, rectified_to_imu)[:3, :4]
-            for i, imu_to_world in enumerate(imu_to_world_list)
-        }
+            for i, imu_to_world in enumerate(imu_to_world_list)}
 
         return DataSource(
             projection_matrix, bgr_filenames, ground_truth, detections,

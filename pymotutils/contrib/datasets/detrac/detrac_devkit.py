@@ -5,7 +5,7 @@ import cv2
 
 import pymotutils
 
-CAMERA_UPDATE_IN_MS = 33.3   # 30 FPS
+CAMERA_UPDATE_IN_MS = 33.3  # 30 FPS
 CAMERA_IMAGE_SHAPE = (960, 540)
 
 
@@ -78,8 +78,7 @@ class DataSource(pymotutils.DataSource):
             "bgr_image": bgr_image,
             "detections": self.detections.get(frame_idx, []),
             "ground_truth": self.ground_truth,
-            "timestamp": float(frame_idx)
-        }
+            "timestamp": float(frame_idx)}
         return frame_data
 
     def peek_image_shape(self):
@@ -137,9 +136,9 @@ class Devkit(object):
         sequence_image_dir = os.path.join(self.image_dir, sequence)
 
         bgr_filenames = {
-            int(os.path.splitext(f[3:])[0]): os.path.join(sequence_image_dir, f)
-            for f in sorted(os.listdir(sequence_image_dir))
-        }
+            int(os.path.splitext(f[3:])[0]): os.path.join(
+                sequence_image_dir, f)
+            for f in sorted(os.listdir(sequence_image_dir))}
 
         detection_dir_name = os.path.basename(
             os.path.normpath(self.detection_dir))
@@ -150,7 +149,6 @@ class Devkit(object):
             detection_file, min_confidence)
 
         ground_truth_file = os.path.join(self.xml_gt_dir, sequence + '.xml')
-        ground_truth = pymotutils.detrac_io.read_groundtruth(
-            ground_truth_file)
+        ground_truth = pymotutils.detrac_io.read_groundtruth(ground_truth_file)
 
         return DataSource(bgr_filenames, detections, ground_truth)

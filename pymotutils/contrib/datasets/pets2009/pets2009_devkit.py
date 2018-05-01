@@ -14,7 +14,6 @@ import cv2
 
 import pymotutils
 
-
 TRAIN_SEQUENCES = ["S1L1-1", "S1L2-2", "S2L1"]
 
 TEST_SEQUENCES = ["S1L1-2", "S1L2-1", "S2L2", "S2L3"]
@@ -24,7 +23,6 @@ CAMERA_UPDATE_IN_MS = 142.85  # approx. 7 Hz
 
 GROUND_PLANE_NORMAL = np.array([0., 0., 1.])
 GROUND_PLANE_DISTANCE = 0.
-
 
 CROPPED_TRACKING_AREA_MIN = np.array([-14.0696, -14.274, -np.inf])
 CROPPED_TRACKING_AREA_MAX = np.array([4.9813, 1.7335, np.inf])
@@ -116,7 +114,7 @@ def intersect_with_ground_plane(
     rays = np.empty((points.shape[0], 4))
     rays[:, :2], rays[:, 2], rays[:, 3] = points, 1., 0.
     rays = np.dot(rays, inv_projection_matrix.T)
-    rays /= np.atleast_2d(np.sqrt(np.sum(rays[:, :3] ** 2, axis=1))).T
+    rays /= np.atleast_2d(np.sqrt(np.sum(rays[:, :3]**2, axis=1))).T
     rays = rays[:, :3]
 
     # 2) check for intersection using dot product between rays
@@ -209,8 +207,8 @@ def clip_track_set_at_tracking_area(track_set, xyz="sensor_data"):
     for tag, track in track_set.tracks.items():
         detections = {
             i: d for i, d in track.detections.items()
-            if np.all(getattr(d, xyz) >= CROPPED_TRACKING_AREA_MIN)
-            and np.all(getattr(d, xyz) <= CROPPED_TRACKING_AREA_MAX)}
+            if np.all(getattr(d, xyz) >= CROPPED_TRACKING_AREA_MIN) and
+            np.all(getattr(d, xyz) <= CROPPED_TRACKING_AREA_MAX)}
         if len(detections) == 0:
             continue
         cropped_track = cropped_track_set.create_track(tag)
@@ -256,8 +254,7 @@ class DataSource(pymotutils.DataSource):
             "detections": self.detections.get(frame_idx, []),
             "ground_truth": self.ground_truth,
             "timestamp": float(frame_idx) * CAMERA_UPDATE_IN_MS / 1000.,
-            "projection_matrix": self.projection_matrix
-        }
+            "projection_matrix": self.projection_matrix}
         return frame_data
 
 
@@ -285,7 +282,8 @@ class Devkit(object):
             raise KeyError("Unknown sequence '%s'" % sequence)
 
         projection_matrix = create_projection_matrix(
-            os.path.join(self.calibration_dir, "View_001.xml"), extrinsic_scale)
+            os.path.join(self.calibration_dir, "View_001.xml"),
+            extrinsic_scale)
 
         base_dir = self.get_dataset_dir(sequence)
         image_dir = os.path.join(base_dir, "View_001")
@@ -325,16 +323,14 @@ class Devkit(object):
     def _download_extract_data_if(self, base_url):
         datasets = [
             "S1_L1.tar.bz2", "S1_L2.tar.bz2", "S1_L3.tar.bz2", "S2_L1.tar.bz2",
-            "S2_L2.tar.bz2", "S2_L3.tar.bz2"
-        ]
+            "S2_L2.tar.bz2", "S2_L3.tar.bz2"]
         sha1_sums = [
             "2a15a1f8f81384499081c032ad0ca3bb7e7b88e9",
             "cbd4a825500a4994f1c2ddbf7b4f4dd0ae9493a1",
             "26a26bc7779b88ad9f41b3e672ad44967010176c",
             "ea01601147245f66ea03c82f6b40f98a130441ed",
             "c1aaf3559ba758bee68aa572b798ff64a0eeb076",
-            "7be2e22b4d8fa44186c4bcfd26eb32e7d299cd72"
-        ]
+            "7be2e22b4d8fa44186c4bcfd26eb32e7d299cd72"]
 
         if not os.path.isdir(self.dataset_dir):
             os.mkdir(self.dataset_dir)
@@ -437,15 +433,16 @@ class Devkit(object):
             for view in views:
                 source_dir = os.path.join(tname, view)
                 this_dest_dir = (
-                    dest_dir if len(tnames) == 1
-                    else "%s-%d" % (dest_dir, 1 + i))
+                    dest_dir
+                    if len(tnames) == 1 else "%s-%d" % (dest_dir, 1 + i))
                 this_dest_dir = os.path.join(this_dest_dir, view)
                 os.makedirs(this_dest_dir, exist_ok=True)
 
                 filenames = glob.glob(os.path.join(source_dir, "*.jpg"))
                 for filename in filenames:
                     shutil.copyfile(
-                        filename, os.path.join(
+                        filename,
+                        os.path.join(
                             this_dest_dir, os.path.basename(filename)))
 
         print("Removing temporary files")
