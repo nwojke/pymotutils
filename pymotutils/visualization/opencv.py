@@ -250,6 +250,40 @@ class ImageViewer(object):
             blended = cv2.addWeighted(image, alpha, image_roi, 1. - alpha, 0)
             copy_to(blended, roi, self.image)
 
+    def line_strip(self, xs, ys):
+        """Draw line strip.
+
+        Parameters
+        ----------
+        xs : array_like
+            Line strip vertex x-coordinates.
+        ys : array_like
+            Line strip vertex y-coordinates.
+
+        """
+        x_pairs = zip(xs[0:], xs[1:])
+        y_pairs = zip(ys[0:], ys[1:])
+
+        for x_pair, y_pair in zip(x_pairs, y_pairs):
+            pt1 = int(x_pair[0]), int(y_pair[0])
+            pt2 = int(x_pair[1]), int(y_pair[1])
+            cv2.line(self.image, pt1, pt2, self.color, self.thickness)
+
+    def arrow(self, start, end):
+        """Draw arrow from start to end.
+
+        Parameters
+        ----------
+        start : array_like
+            Vector of length 2 which contains the arrow starting position.
+        end : array_like
+            Vector of length 2 which contains the arrow end position.
+
+        """
+        start = tuple(int(x) for x in start)
+        end = tuple(int(x) for x in end)
+        cv2.arrowedLine(self.image, start, end, self.color, self.thickness)
+
     def gaussian(self, mean, covariance, alpha=None, label=None):
         """Draw 95% confidence ellipse of a 2-D Gaussian distribution.
 
@@ -261,6 +295,8 @@ class ImageViewer(object):
             The 2x2 covariance matrix of the Gaussian distribution.
         label : Optional[str]
             A text label that is placed at the center of the ellipse.
+        alpha : Optional[float]
+            Transparency between 0 and 1.
 
         """
         # chi2inv(0.95, 2) = 5.9915
@@ -343,8 +379,8 @@ class ImageViewer(object):
             indices = np.logical_and.reduce((cond1, cond2, cond3, cond4))
             points = points[indices, :]
         if colors is None:
-            colors = np.repeat(self._color, len(points)).reshape(
-                3, len(points)).T
+            colors = np.repeat(self._color,
+                               len(points)).reshape(3, len(points)).T
         indices = (points + .5).astype(np.int)
         self.image[indices[:, 1], indices[:, 0], :] = colors
 
@@ -463,7 +499,7 @@ class ImageVisualization(pymotutils.Visualization):
         self._user_callback = lambda frame_idx: None
 
     def enable_videowriter(
-            self, video_filename, fourcc_string="MJPG", fps=None):
+            self, video_filename, fourcc_string="FMP4", fps=None):
         """Write output to video.
 
         Parameters
