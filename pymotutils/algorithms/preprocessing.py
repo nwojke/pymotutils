@@ -32,7 +32,7 @@ def non_max_suppression(boxes, max_bbox_overlap, scores=None):
 
     Returns
     -------
-    List[int]
+    ndarray
         Returns indices of detections that have survived non-maxima suppression.
 
     """
@@ -72,7 +72,7 @@ def non_max_suppression(boxes, max_bbox_overlap, scores=None):
             idxs,
             np.concatenate(([last], np.where(overlap > max_bbox_overlap)[0])))
 
-    return pick
+    return np.asarray(pick)
 
 
 def filter_detections(
