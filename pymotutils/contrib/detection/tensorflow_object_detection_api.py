@@ -240,6 +240,6 @@ MSCOCO_LABELMAP = {
 
 """
 This dictionary provides the mapping from class ID to display_name for networks
-trained on KITTI.  
+trained on KITTI.
 """
 KITTI_LABELMAP = { 1: "car", 2: "pedestrian" }
