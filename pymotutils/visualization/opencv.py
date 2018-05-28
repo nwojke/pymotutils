@@ -384,6 +384,50 @@ class ImageViewer(object):
         indices = (points + .5).astype(np.int)
         self.image[indices[:, 1], indices[:, 0], :] = colors
 
+    def polyline(self, points, alpha=None):
+        """Draw a line
+
+        Parameters
+        ----------
+        points : ndarray
+            The Nx2 array of image locations, where the first dimension is
+            the x-coordinate and the second dimension is the y-coordinate.
+        alpha : Optional[float]
+            Transparency between 0 and 1.
+
+        Returns
+        -------
+
+        """
+        if alpha is None:
+            cv2.polylines(
+                self.image, [points], False, self._color, self.thickness)
+            return
+
+        padding = max(0, self.thickness)
+        x1, y1 = np.amin(points, axis=0)
+        x2, y2 = np.amax(points, axis=0)
+
+        x = min(self.image.shape[1] - 1 - padding, max(0 + padding, x1))
+        y = min(self.image.shape[0] - 1 - padding, max(0 + padding, y1))
+        w = min(self.image.shape[1] - 1 - padding, max(0 + padding, x2)) - x
+        h = min(self.image.shape[0] - 1 - padding, max(0 + padding, y2)) - y
+
+        roi = (
+            int(x - padding), int(y - padding), int(w + 2 * padding),
+            int(h + 2 * padding))
+
+        if not is_in_bounds(self.image, roi):
+            return
+
+        image_roi = view_roi(self.image, roi)
+        image = image_roi.copy()
+        points = points - roi[:2]
+        cv2.polylines(image, [points], False, self._color, self.thickness)
+
+        blended = cv2.addWeighted(image, alpha, image_roi, 1. - alpha, 0)
+        copy_to(blended, roi, self.image)
+
     def enable_videowriter(
             self, output_filename, fourcc_string="MJPG", fps=None):
         """ Write images to video file.
