@@ -138,7 +138,7 @@ class MonoVisualization(pymotutils.ImageVisualization):
             for tag in track_set_frame.keys():
                 self._viewer.color = pymotutils.create_unique_color_uchar(tag)
                 track = track_set.tracks[tag]
-                for this_frame_idx in range(track.first_frame_idx, frame_idx):
+                for this_frame_idx in range(track.first_frame_idx(), frame_idx):
                     if this_frame_idx not in track.detections:
                         continue
                     x, y, w, h = track.detections[this_frame_idx].sensor_data
