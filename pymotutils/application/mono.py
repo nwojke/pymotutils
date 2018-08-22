@@ -35,6 +35,10 @@ class RegionOfInterestDetection(pymotutils.Detection):
         False, missing this detection will not have a negative impact on
         tracking performance. Therefore, this flag can be used to mark hard to
         detect objects (such as full occlusions) in ground truth.
+    class_label : Optional[int]
+        An optional integer-valued class label.
+    class_name : Optional[str]
+        An optional class name.
 
     Attributes
     ----------
@@ -53,11 +57,12 @@ class RegionOfInterestDetection(pymotutils.Detection):
 
     def __init__(
             self, frame_idx, roi, confidence=None, xyz=None, feature=None,
-            do_not_care=False):
+            do_not_care=False, class_label=None, class_name=None):
         sensor_data = roi if confidence is None else np.r_[roi, confidence]
         super(RegionOfInterestDetection, self).__init__(
             frame_idx, sensor_data, do_not_care=do_not_care, roi=roi,
-            confidence=confidence, xyz=xyz, feature=feature)
+            confidence=confidence, xyz=xyz, feature=feature,
+            class_label=class_label, class_name=class_name)
 
 
 class MonoVisualization(pymotutils.ImageVisualization):
@@ -90,9 +95,10 @@ class MonoVisualization(pymotutils.ImageVisualization):
     track_set_thickness : int
         The line thickness to be used for drawing track sets (e.g.,
         ground truth or tracking output).
-    draw_trajectories : bool
-        If True, draws the entire trajectory of each object. If False, draws
-        only the location at the current time step.
+    trajectory_visualization_len : int
+        A positive integer which evaluates to the maximum length of visualized
+        trajectories. If 1, only the current time step is visualized. This is
+        the default behavior.
 
     """
 
@@ -104,7 +110,8 @@ class MonoVisualization(pymotutils.ImageVisualization):
         self.detection_thickness = 2
         self.detection_color = 0, 0, 255
         self.track_set_thickness = 2
-        self.draw_trajectories = False
+        self.line_thickness = 10
+        self.trajectory_visualization_len = 1
         self._frame_data = None
 
         if online_tracking_visualization is None:
@@ -134,16 +141,28 @@ class MonoVisualization(pymotutils.ImageVisualization):
         track_set_frame = track_set.collect_sensor_data(frame_idx)
 
         self._viewer.thickness = self.track_set_thickness
-        if self.draw_trajectories:
+        if self.trajectory_visualization_len > 1:
             for tag in track_set_frame.keys():
                 self._viewer.color = pymotutils.create_unique_color_uchar(tag)
                 track = track_set.tracks[tag]
-                for this_frame_idx in range(track.first_frame_idx(), frame_idx):
+                points = []
+
+                first_frame_idx = max(
+                    track.first_frame_idx(),
+                    frame_idx - self.trajectory_visualization_len)
+                for this_frame_idx in range(first_frame_idx, frame_idx):
                     if this_frame_idx not in track.detections:
                         continue
-                    x, y, w, h = track.detections[this_frame_idx].sensor_data
+                    x, y, w, h = (
+                        track.detections[this_frame_idx].sensor_data[:4])
                     x, y = int(x + w / 2), int(y + h)
+                    points.append((x, y))
                     self._viewer.circle(x, y, 1)
+                if len(points) > 0:
+                    points = np.asarray(points)
+                    self._viewer.thickness = self.line_thickness
+                    self._viewer.polyline(np.asarray(points), alpha=0.5)
+                    self._viewer.thickness = self.track_set_thickness
         for tag, (x, y, w, h) in track_set_frame.items():
             self._viewer.color = pymotutils.create_unique_color_uchar(tag)
             self._viewer.rectangle(x, y, w, h, label=str(tag))

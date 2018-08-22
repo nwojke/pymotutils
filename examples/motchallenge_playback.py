@@ -3,6 +3,7 @@ import argparse
 import pymotutils
 from pymotutils.contrib.datasets import motchallenge
 
+TRAJECTORY_VISUALIZATION_LEN_IN_MSECS = 3000.0
 
 def parse_args():
     """ Parse command line arguments.
@@ -35,6 +36,8 @@ def main():
 
     visualization = pymotutils.MonoVisualization(
         update_ms=data_source.update_ms, window_shape=window_shape)
+    visualization.trajectory_visualization_len = int(
+        TRAJECTORY_VISUALIZATION_LEN_IN_MSECS / data_source.update_ms)
     application = pymotutils.Application(data_source)
 
     # First, play detections. Then, show ground truth tracks.
