@@ -251,25 +251,6 @@ class ImageViewer(object):
             blended = cv2.addWeighted(image, alpha, image_roi, 1. - alpha, 0)
             copy_to(blended, roi, self.image)
 
-    def line_strip(self, xs, ys):
-        """Draw line strip.
-
-        Parameters
-        ----------
-        xs : array_like
-            Line strip vertex x-coordinates.
-        ys : array_like
-            Line strip vertex y-coordinates.
-
-        """
-        x_pairs = zip(xs[0:], xs[1:])
-        y_pairs = zip(ys[0:], ys[1:])
-
-        for x_pair, y_pair in zip(x_pairs, y_pairs):
-            pt1 = int(x_pair[0]), int(y_pair[0])
-            pt2 = int(x_pair[1]), int(y_pair[1])
-            cv2.line(self.image, pt1, pt2, self.color, self.thickness)
-
     def arrow(self, start, end):
         """Draw arrow from start to end.
 
