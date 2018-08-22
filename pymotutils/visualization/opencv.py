@@ -130,6 +130,7 @@ class ImageViewer(object):
         self._update_ms = update_ms
         self._video_writer = None
         self._user_fun = lambda: None
+        self._keypress_fun = lambda key: None
         self._terminate = False
 
         self.image = np.zeros(self._window_shape + (3, ), dtype=np.uint8)
@@ -455,7 +456,7 @@ class ImageViewer(object):
         """
         self._video_writer = None
 
-    def run(self, update_fun=None):
+    def run(self, update_fun=None, keypress_fun=None):
         """Start the image viewer.
 
         This method blocks until the user requests to close the window.
@@ -465,10 +466,15 @@ class ImageViewer(object):
         update_fun : Optional[Callable[] -> None]
             An optional callable that is invoked at each frame. May be used
             to play an animation/a video sequence.
+        keypress_fun : Optional[Callable[int] -> None]
+            An optional callable that is invoked when the user presses a
+            button.
 
         """
         if update_fun is not None:
             self._user_fun = update_fun
+        if keypress_fun is not None:
+            self._keypress_fun = keypress_fun
 
         self._terminate, is_paused = False, True
         print("ImageViewer is paused, press space to start.")
@@ -494,6 +500,8 @@ class ImageViewer(object):
                 print("stepping")
                 self._user_fun()
                 is_paused = True
+            elif key != -1:
+                self._keypress_fun(key)
 
         # Due to a bug in OpenCV we must call imshow after destroying the
         # window. This will make the window appear again as soon as waitKey
@@ -568,7 +576,7 @@ class ImageVisualization(pymotutils.Visualization):
         self._frame_idx = start_idx
         self._end_idx = end_idx
         self._user_callback = frame_callback
-        self._viewer.run(self._next_frame)
+        self._viewer.run(self._next_frame, self.on_keypress)
 
     def _next_frame(self):
         if self._end_idx is not None and self._frame_idx >= self._end_idx:
@@ -576,3 +584,14 @@ class ImageVisualization(pymotutils.Visualization):
             return
         self._user_callback(self._frame_idx)
         self._frame_idx += 1
+
+    def on_keypress(self, key):
+        """ Callback function for key-press events.
+
+        Parameters
+        ----------
+        key : int
+            An OpenCV key press code.
+
+        """
+        pass
